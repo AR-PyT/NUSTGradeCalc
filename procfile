@@ -1,0 +1,1 @@
+web: gunicorn NUSTGradeCalc.wsgi --log-file -
