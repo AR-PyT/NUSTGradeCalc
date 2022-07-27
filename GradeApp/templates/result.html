@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "/GradeApp/css/result.css" %}">
+    <script src="{% static "/GradeApp/js/result.js" %}"></script>
+
+</head>
+<body style="background-color: black">
+<h1 style="text-align: center; color: #b1dfbb">Welcome {{ name }}!!!</h1>
+<div>
+    <table style="background-color: #d4edda; border: 20px solid gainsboro;margin-left: auto; margin-right: auto; text-align: center">
+        <tbody>
+        <tr>
+            <th style="width: 400px">Subject</th>
+            <th style="width: 150px;">Aggregate</th>
+            <th style="width: 150px;">Grade(Expected)</th>
+        </tr>
+        <tr style="background-blend-mode: overlay;">
+            <td style="text-align: left">Applied Physics</td>
+            <td>{{ aggAP }}</td>
+            <td>{{ grAP }}</td>
+        </tr>
+            <tr>
+            <td style="text-align: left">Calculus-II</td>
+            <td>{{ aggCAL }}</td>
+            <td>{{ grCAL }}</td>
+        </tr>
+            <tr>
+            <td style="text-align: left">Digital Logic Design</td>
+            <td>{{ aggDLD }}</td>
+            <td>{{ grDLD }}</td>
+        </tr>
+            <tr>
+            <td style="text-align: left">Object Oriented Programming</td>
+            <td>{{ aggOOP }}</td>
+            <td>{{ grOOP }}</td>
+        </tr>
+            <tr>
+            <td style="text-align: left">Islamic Studies</td>
+            <td>{{ aggISL }}</td>
+            <td>{{ grISL }}</td>
+        </tr>
+        </tr>
+        <tr>
+            <td style="text-align: left">Introduction To Management</td>
+            <td>{{ aggITM }}</td>
+            <td>{{ grITM }}</td>
+        </tr>
+
+        </tbody>
+    </table>
+{#    {% load static %}#}
+{#    <img src="{% static "GradeApp/img/curve.png" %}">#}
+    <div class="slideshow-container">
+
+      <!-- Full-width images with number and caption text -->
+      <div class="mySlides fade">
+        <div class="numbertext">1 / 6</div>
+          {% if section == "C" %}
+                              <div style="text-align: center; align-content: center">
+        <img src="{% static "/GradeApp/img/C/ap.png" %}" style=" height: 300px;">
+      </div>
+          {% else %}
+                <div style="text-align: center; align-content: center">
+        <img src="{% static "/GradeApp/img/AB/ap.png" %}" style=" height: 300px;">
+      </div>
+          {% endif %}
+      </div>
+
+      <div class="mySlides fade">
+        <div class="numbertext">2 / 6</div>
+                          <div style="text-align: center; align-content: center">
+        <img src="{% static "/GradeApp/img/ABC/calc.png" %}" style=" height: 300px;">
+      </div>
+      </div>
+
+      <div class="mySlides fade">
+        <div class="numbertext">3 / 6</div>
+          {% if section == "C" %}
+                              <div style="text-align: center; align-content: center">
+        <img src="{% static "/GradeApp/img/C/dld.png" %}" style=" height: 300px;">
+      </div>
+          {% else %}
+                              <div style="text-align: center; align-content: center">
+        <img src="{% static "/GradeApp/img/AB/dld.png" %}" style=" height: 300px;">
+      </div>
+          {% endif %}
+      </div>
+
+        <div class="mySlides fade">
+        <div class="numbertext">4 / 6</div>
+                            <div style="text-align: center; align-content: center">
+        <img src="{% static "/GradeApp/img/ABC/isl.png" %}" style=" height: 300px;">
+      </div>
+      </div>
+
+      <div class="mySlides fade">
+        <div class="numbertext">5 / 6</div>
+          {% if section == "C" %}
+                              <div style="text-align: center; align-content: center">
+        <img src="{% static "/GradeApp/img/C/oop.png" %}" style=" height: 300px;">
+      </div>
+          {% else %}
+                              <div style="text-align: center; align-content: center">
+        <img src="{% static "/GradeApp/img/AB/oop.png" %}" style=" height: 300px;">
+      </div>
+          {% endif %}
+      </div>
+
+            <div class="mySlides fade">
+        <div class="numbertext">6 / 6</div>
+                <div style="text-align: center; align-content: center">
+        <img src="{% static "/GradeApp/img/ABC/imgt.png" %}" style=" height: 300px;">
+      </div>
+            </div>
+
+      <!-- Next and previous buttons -->
+      <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+      <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+    <br>
+
+    <!-- The dots/circles -->
+    <div style="text-align:center">
+      <span class="dot" onclick="currentSlide(1)"></span>
+      <span class="dot" onclick="currentSlide(2)"></span>
+      <span class="dot" onclick="currentSlide(3)"></span>
+      <span class="dot" onclick="currentSlide(4)"></span>
+      <span class="dot" onclick="currentSlide(5)"></span>
+      <span class="dot" onclick="currentSlide(6)"></span>
+    </div>
+</div>
+</body>
+</html>
