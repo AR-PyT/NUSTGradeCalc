@@ -177,7 +177,7 @@ def process_form(request):
         obj = tables[input_data['section'].upper()].objects.get(uname=input_data["id"])
         if obj.password != input_data["password"]:
             return render(request, "invalid.html")
-    except tables[input_data['section'].upper()].DoesNotExist:
+    except Exception as e:
         # Check on NUST Record
         if add_new_record(input_data):
             obj = tables[input_data['section'].upper()].objects.get(uname=input_data["id"])
