@@ -24,10 +24,10 @@ grade_schema = {
         'Final': 50
     },
     'Introduction To Management': {
-        'One Hour Test/Mid Term': 30,
+        'One Hour Test/Mid Term': 40,
         'Assignment': 10,
         'Quiz': 10,
-        'Final': 50
+        'Final': 40
     },
     'Applied Physics': {
         'One Hour Test/Mid Term': 25,
@@ -62,12 +62,23 @@ def forget(request):
     if not uname or not section:
         return render(request, "invalid.html")
     try:
-        tables[section.upper()].objects.get(uname=uname).delete()
-    except tables[section.upper()].DoesNotExist:
-        return render(request, "invalid.html")
+        try:
+            tables[section.upper()].objects.get(uname=uname).delete()
+        except tables[section.upper()].DoesNotExist:
+            return render(request, "invalid.html")
+    except tables[section.upper()].MultipleObjectsReturned:
+        for a in tables[section.upper()].objects.all():
+            if a.uname == uname:
+                a.delete()
     return render(request, "login.html")
 
+
 def add_new_record(input_data):
+    try:
+        temp = tables[input_data["section"].upper()].objects.get(uname=input_data["id"])
+        temp.delete()
+    except tables[input_data["section"].upper()].DoesNotExist:
+        pass
     with requests.session() as s:
         payload = {'login': input_data["id"],
                    'password': input_data["password"]
@@ -109,7 +120,7 @@ def add_new_record(input_data):
                     temp_score[exam.text.strip()].append(
                         float(re.findall(r"(.*)(?:\s*</td>, '\\n'])", str(score_row.contents))[0].strip()))
 
-        # Calculate Aggregate Based on acquired Scores
+            # Calculate Aggregate Based on acquired Scores
             aggregate = 0
             for k, v in temp_score.items():
                 aggregate += (sum(v) / (len(v) * 100)) * grade_schema[key][k]
@@ -132,7 +143,7 @@ def add_new_record(input_data):
         *models.GradesB.objects.values_list('istd'),
         *models.GradesC.objects.values_list('istd')
     ]))
-    predictions.decide_boundary(2, "Into To Management", "ABC/imgt.png", np.array([
+    predictions.decide_boundary(2, "Intro To Management", "ABC/imgt.png", np.array([
         *models.GradesA.objects.values_list('imgt'),
         *models.GradesB.objects.values_list('imgt'),
         *models.GradesC.objects.values_list('imgt')

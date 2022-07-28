@@ -13,6 +13,9 @@ class GradesA(models.Model):
     imgt = models.FloatField()
     ap = models.FloatField()
 
+    def __str__(self):
+        return self.name
+
 
 class GradesB(models.Model):
     uname = models.CharField(max_length=30)
@@ -25,6 +28,8 @@ class GradesB(models.Model):
     imgt = models.FloatField()
     ap = models.FloatField()
 
+    def __str__(self):
+        return self.name
 
 class GradesC(models.Model):
     uname = models.CharField(max_length=30)
@@ -36,3 +41,6 @@ class GradesC(models.Model):
     istd = models.FloatField()
     imgt = models.FloatField()
     ap = models.FloatField()
+
+    def __str__(self):
+        return self.name

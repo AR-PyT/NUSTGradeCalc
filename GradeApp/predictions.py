@@ -46,7 +46,9 @@ def decide_boundary(ch, label, i_name, data):
         return
     mean = data.mean()
     std_deviation = sqrt(data.var())
-    score = 95
+    score = 89
+    if label == "Intro To Management":
+        score = 95
     prev_grade = 0
     cur_grade = 0
     boundaries = []
