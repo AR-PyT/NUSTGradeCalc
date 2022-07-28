@@ -1,5 +1,4 @@
 #!/usr/bin/env python3.6
-from tensorflow import keras as tf
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from math import sqrt
@@ -7,7 +6,21 @@ import scipy.stats as stats
 import numpy as np
 
 grade_map = {'0': "A", '1': "B+", '2': "B", '3': "C+", '4': "C", '5': "D+", '6': "D", '7': "F"}
-model = tf.models.load_model("GradeApp/simpleModel.h5", compile=True)
+
+l1_weights = np.loadtxt("GradeApp/params/w1.txt")
+l1_bias = np.loadtxt("GradeApp/params/b1.txt")
+
+l2_weights = np.loadtxt("GradeApp/params/w2.txt")
+l2_bias = np.loadtxt("GradeApp/params/b2.txt")
+
+l3_weights = np.loadtxt("GradeApp/params/w3.txt")
+l3_bias = np.loadtxt("GradeApp/params/b3.txt")
+
+
+def get_predict(input_data):
+    return np.matmul(
+        np.maximum(0, np.matmul(np.maximum(0, np.matmul(input_data, l1_weights) + l1_bias), l2_weights) + l2_bias),
+        l3_weights) + l3_bias
 
 
 def make_prediction(score, ch, data):
@@ -15,14 +28,17 @@ def make_prediction(score, ch, data):
     SB = list(1 if score > x > mean else 0 for x in data).count(1) if score > mean else -list(
         1 if score < x < mean else 0 for x in data).count(1)
     SB /= len(data)
-
-    res = model.predict(np.array([[score, ch, mean, SB,
+    res = get_predict(np.array([[score, ch, mean, SB,
                                    score ** 2, score * ch, score * mean, score * SB,
                                    ch ** 2, ch * mean, ch * SB,
                                    mean ** 2, mean * SB,
                                    SB ** 2]]))[0]
+
     grade = np.where(res == np.max(res))[0][0]
     return grade_map[str(grade)]
+
+
+make_prediction(72, 3, np.array([12, 56, 78, 77, 65]))
 
 
 def decide_boundary(ch, label, i_name, data):
@@ -40,7 +56,7 @@ def decide_boundary(ch, label, i_name, data):
             SB = list(1 if score > x > mean else 0 for x in data).count(1) if score > mean else -list(
                 1 if score < x < mean else 0 for x in data).count(1)
             SB /= len(data)
-            res = model.predict(np.array([[score, ch, mean, SB, score ** 2, score * ch, score * mean, score * SB,
+            res = get_predict(np.array([[score, ch, mean, SB, score ** 2, score * ch, score * mean, score * SB,
                                            ch ** 2, ch * mean, ch * SB, mean ** 2, mean * SB, SB ** 2]]))[0]
             cur_grade = np.where(res == np.max(res))[0][0]  # gives index for grade
             score -= 10
@@ -50,7 +66,7 @@ def decide_boundary(ch, label, i_name, data):
             SB = list(1 if score > x > mean else 0 for x in data).count(1) if score > mean else -list(
                 1 if score < x < mean else 0 for x in data).count(1)
             SB /= len(data)
-            res = model.predict(np.array([[score, ch, mean, SB, score ** 2, score * ch, score * mean, score * SB,
+            res = get_predict(np.array([[score, ch, mean, SB, score ** 2, score * ch, score * mean, score * SB,
                                            ch ** 2, ch * mean, ch * SB, mean ** 2, mean * SB, SB ** 2]]))[0]
             cur_grade = np.where(res == np.max(res))[0][0]  # gives index for grade
             score -= 2
@@ -59,7 +75,7 @@ def decide_boundary(ch, label, i_name, data):
             SB = list(1 if score > x > mean else 0 for x in data).count(1) if score > mean else -list(
                 1 if score < x < mean else 0 for x in data).count(1)
             SB /= len(data)
-            res = model.predict(np.array([[score, ch, mean, SB, score ** 2, score * ch, score * mean, score * SB,
+            res = get_predict(np.array([[score, ch, mean, SB, score ** 2, score * ch, score * mean, score * SB,
                                            ch ** 2, ch * mean, ch * SB, mean ** 2, mean * SB, SB ** 2]]))[0]
             cur_grade = np.where(res == np.max(res))[0][0]  # gives index for grade
             score -= 0.5
