@@ -56,6 +56,17 @@ grade_schema = {
 }
 
 
+def forget(request):
+    uname = request.GET.get('uname')
+    section = request.GET.get('section')
+    if not uname or not section:
+        return render(request, "invalid.html")
+    try:
+        tables[section.upper()].objects.get(uname=uname).delete()
+    except tables[section.upper()].DoesNotExist:
+        return render(request, "invalid.html")
+    return render(request, "login.html")
+
 def add_new_record(input_data):
     with requests.session() as s:
         payload = {'login': input_data["id"],
@@ -175,7 +186,7 @@ def process_form(request):
 
     aggregates = {"aggAP": obj.ap, "aggCAL": obj.calc, "aggDLD": obj.dld, "aggOOP": obj.oop,
                   "aggISL": obj.istd, "aggITM": obj.imgt}
-    context = {"name": obj.name, **aggregates}
+    context = {"name": obj.name, "uname": input_data["id"], "section": input_data["section"], **aggregates}
 
     sequence = {"grAP": "ap", "grCAL": "calc", "grDLD": "dld", "grOOP": "oop", "grISL": "istd", "grITM": "imgt"}
     for k, v in sequence.items():

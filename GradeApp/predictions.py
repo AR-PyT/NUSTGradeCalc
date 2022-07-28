@@ -157,6 +157,5 @@ def decide_boundary(ch, label, i_name, data):
     plt.legend(handles=[patch1, patch2, patch3, patch4, patch5, patch6, patch7, patch8])
     plt.title(label)
     if os.path.exists("./static/GradeApp/img/" + i_name):
-        print("File Removed")
         os.remove("./static/GradeApp/img/" + i_name)
     plt.savefig("./static/GradeApp/img/" + i_name)
