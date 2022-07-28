@@ -24,31 +24,7 @@ def get_predict(input_data):
         l3_weights) + l3_bias
 
 
-def make_prediction(score, ch, data):
-    mean = data.mean()
-    SB = list(1 if score > x > mean else 0 for x in data).count(1) if score > mean else -list(
-        1 if score < x < mean else 0 for x in data).count(1)
-    SB /= len(data)
-    res = get_predict(np.array([[score, ch, mean, SB,
-                                 score ** 2, score * ch, score * mean, score * SB,
-                                 ch ** 2, ch * mean, ch * SB,
-                                 mean ** 2, mean * SB,
-                                 SB ** 2]]))[0]
-
-    grade = np.where(res == np.max(res))[0][0]
-    return grade_map[str(grade)]
-
-
-def decide_boundary(ch, label, i_name, data):
-    plt.clf()
-    plt.cla()
-    if not data.size:
-        return
-    mean = data.mean()
-    std_deviation = sqrt(data.var())
-    score = 89
-    if label == "Intro To Management":
-        score = 95
+def get_boundary(score, ch, mean, data):
     prev_grade = 0
     cur_grade = 0
     boundaries = []
@@ -61,18 +37,10 @@ def decide_boundary(ch, label, i_name, data):
             res = get_predict(np.array([[score, ch, mean, SB, score ** 2, score * ch, score * mean, score * SB,
                                          ch ** 2, ch * mean, ch * SB, mean ** 2, mean * SB, SB ** 2]]))[0]
             cur_grade = np.where(res == np.max(res))[0][0]  # gives index for grade
-            score -= 10
-        score += 8
+            score -= 1
+        score += 0.9
         cur_grade = prev_grade
-        while prev_grade < cur_grade:
-            SB = list(1 if score > x > mean else 0 for x in data).count(1) if score > mean else -list(
-                1 if score < x < mean else 0 for x in data).count(1)
-            SB /= len(data)
-            res = get_predict(np.array([[score, ch, mean, SB, score ** 2, score * ch, score * mean, score * SB,
-                                         ch ** 2, ch * mean, ch * SB, mean ** 2, mean * SB, SB ** 2]]))[0]
-            cur_grade = np.where(res == np.max(res))[0][0]  # gives index for grade
-            score -= 2
-        score += 1.5
+
         while not prev_grade < cur_grade:
             SB = list(1 if score > x > mean else 0 for x in data).count(1) if score > mean else -list(
                 1 if score < x < mean else 0 for x in data).count(1)
@@ -80,8 +48,9 @@ def decide_boundary(ch, label, i_name, data):
             res = get_predict(np.array([[score, ch, mean, SB, score ** 2, score * ch, score * mean, score * SB,
                                          ch ** 2, ch * mean, ch * SB, mean ** 2, mean * SB, SB ** 2]]))[0]
             cur_grade = np.where(res == np.max(res))[0][0]  # gives index for grade
-            score -= 0.5
-        boundaries.insert(0, score)
+            score -= 0.1
+        boundaries.insert(0, score + 0.1)
+
         prev_grade = cur_grade
         if cur_grade == 7:
             boundaries.insert(0, score)
@@ -89,6 +58,42 @@ def decide_boundary(ch, label, i_name, data):
 
     for i in range(8 - len(boundaries)):
         boundaries.insert(0, 0)
+
+    return boundaries
+
+
+def make_prediction(score, ch, data):
+    mean = data.mean()
+    SB = list(1 if score > x > mean else 0 for x in data).count(1) if score > mean else -list(
+        1 if score < x < mean else 0 for x in data).count(1)
+    SB /= len(data)
+    res = get_predict(np.array([[score, ch, mean, SB,
+                                 score ** 2, score * ch, score * mean, score * SB,
+                                 ch ** 2, ch * mean, ch * SB,
+                                 mean ** 2, mean * SB,
+                                 SB ** 2]]))[0]
+
+    grade = np.where(res == np.max(res))[0][0]
+
+    # Special Chk for Management Tentative
+    start = 95 if mean > 90 else 89
+
+    boundaries = get_boundary(start, ch, mean, data)
+    return (grade_map[str(grade)],
+            (str(round(1 - stats.norm.cdf((boundaries[8 - grade] - score) / sqrt(data.var())),
+                       4) * 100) if grade else "0") + "%")
+
+
+def decide_boundary(ch, label, i_name, data):
+    plt.clf()
+    plt.cla()
+    if not data.size:
+        return
+    mean = data.mean()
+    std_deviation = sqrt(data.var())
+    score = 95 if label == "Intro To Management" else 89
+
+    boundaries = get_boundary(score, ch, mean, data)
     # Plot the new curve and save it
     x = np.linspace(mean - 3 * std_deviation, mean + 3 * std_deviation, 100)
     # if std_deviation:
@@ -104,9 +109,7 @@ def decide_boundary(ch, label, i_name, data):
         y.insert(-1, 0)
     x = np.array(x)
     y = np.array(y)
-    # else:
-    #     y = [0] * 400
-    #     y[int(round(mean, 0) * 4)] = 1
+
     plt.plot(x, y, label=label, color="black")
     plt.rcParams["figure.figsize"] = (10, 1)
     # filling colors Start from
@@ -119,31 +122,31 @@ def decide_boundary(ch, label, i_name, data):
         return
     plt.fill_between(x[start:], 0, y[start:], color='green', alpha=0.7)
 
-    end = start + 5
+    end = start + 3
     start = np.where(x > boundaries[-2])[0][0]
     plt.fill_between(x[start:end], 0, y[start:end], color='blue', alpha=0.3)
 
-    end = start + 5
+    end = start + 3
     start = np.where(x > boundaries[-3])[0][0]
     plt.fill_between(x[start:end], 0, y[start:end], color='red', alpha=0.3)
 
-    end = start + 5
+    end = start + 3
     start = np.where(x > boundaries[-4])[0][0]
     plt.fill_between(x[start:end], 0, y[start:end], color='pink', alpha=0.3)
 
-    end = start + 5
+    end = start + 3
     start = np.where(x > boundaries[-5])[0][0]
     plt.fill_between(x[start:end], 0, y[start:end], color='purple', alpha=0.3)
 
-    end = start + 5
+    end = start + 3
     start = np.where(x > boundaries[-6])[0][0]
     plt.fill_between(x[start:end], 0, y[start:end], color='brown', alpha=0.3)
 
-    end = start + 5
+    end = start + 3
     start = np.where(x > boundaries[-7])[0][0]
     plt.fill_between(x[start:end], 0, y[start:end], color='red', alpha=0.3)
 
-    end = start + 5
+    end = start + 3
     start = np.where(x > boundaries[-8])[0][0]
     plt.fill_between(x[start:end], 0, y[start:end], color='black', alpha=0.3)
 
@@ -161,3 +164,8 @@ def decide_boundary(ch, label, i_name, data):
     if os.path.exists("./static/GradeApp/img/" + i_name):
         os.remove("./static/GradeApp/img/" + i_name)
     plt.savefig("./static/GradeApp/img/" + i_name)
+
+# from GradeApp import models
+# d = np.array([*models.GradesA.objects.values_list("oop"),
+#                                  *models.GradesB.objects.values_list("oop")])
+# decide_boundary(4, "test", "tt.png", d)

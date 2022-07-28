@@ -174,7 +174,6 @@ def add_new_record(input_data):
     predictions.decide_boundary(4, "OOP", "C/oop.png", np.array([
         *models.GradesC.objects.values_list('oop')
     ]))
-
     return True
 
 
@@ -217,7 +216,7 @@ def process_form(request):
             ch = 2
         else:
             ch = 3
-        context[k] = predictions.make_prediction(aggregates[k.replace('gr', 'agg')], ch, data)
+        context[k], context[k.replace('gr', 'p')] = predictions.make_prediction(aggregates[k.replace('gr', 'agg')], ch, data)
     return render(request, "result.html", context)
 
 
