@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.6
-import tensorflow as tf
+from tensorflow import keras as tf
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from math import sqrt
@@ -7,7 +7,7 @@ import scipy.stats as stats
 import numpy as np
 
 grade_map = {'0': "A", '1': "B+", '2': "B", '3': "C+", '4': "C", '5': "D+", '6': "D", '7': "F"}
-model = tf.keras.models.load_model("GradeApp/simpleModel.h5", compile=True)
+model = tf.models.load_model("GradeApp/simpleModel.h5", compile=True)
 
 
 def make_prediction(score, ch, data):
