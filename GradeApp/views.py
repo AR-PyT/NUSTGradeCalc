@@ -173,10 +173,10 @@ def process_form(request):
             return render(request, "invalid.html")
 
     aggregates = {"aggAP": obj.ap, "aggCAL": obj.calc, "aggDLD": obj.dld, "aggOOP": obj.oop,
-                  "aggISL": obj.istd, "aggIMT": obj.imgt}
+                  "aggISL": obj.istd, "aggITM": obj.imgt}
     context = {"name": obj.name, **aggregates}
 
-    sequence = {"grAP": "ap", "grCAL": "calc", "grDLD": "dld", "grOOP": "oop", "grISL": "istd", "grIMT": "imgt"}
+    sequence = {"grAP": "ap", "grCAL": "calc", "grDLD": "dld", "grOOP": "oop", "grISL": "istd", "grITM": "imgt"}
     for k, v in sequence.items():
         if v in ["ap", "dld", "oop"]:
             if input_data['section'].upper() == "C":

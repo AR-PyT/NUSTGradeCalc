@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from math import sqrt
+import os
 import scipy.stats as stats
 import numpy as np
 
@@ -88,12 +89,23 @@ def decide_boundary(ch, label, i_name, data):
     for i in range(8 - len(boundaries)):
         boundaries.insert(0, 0)
     # Plot the new curve and save it
-    x = np.linspace(0, 100, 400)
-    if std_deviation:
-        y = stats.norm.pdf(x, mean, std_deviation)
-    else:
-        y = [0] * 400
-        y[int(round(mean, 0) * 4)] = 1
+    x = np.linspace(mean - 3*std_deviation, mean + 3*std_deviation, 100)
+    # if std_deviation:
+    y = stats.norm.pdf(x, mean, std_deviation)
+
+    x = [y for y in x]
+    y = [x for x in y]
+    for i in range(int(x[0]) + 1):
+        x.insert(0, i)
+        y.insert(0, 0)
+    for i in range(int(x[-1]) + 1, 101):
+        x.insert(-1, i)
+        y.insert(-1, 0)
+    x = np.array(x)
+    y = np.array(y)
+    # else:
+    #     y = [0] * 400
+    #     y[int(round(mean, 0) * 4)] = 1
     plt.plot(x, y, label=label, color="black")
     plt.rcParams["figure.figsize"] = (10, 1)
     # filling colors Start from
@@ -145,4 +157,7 @@ def decide_boundary(ch, label, i_name, data):
 
     plt.legend(handles=[patch1, patch2, patch3, patch4, patch5, patch6, patch7, patch8])
     plt.title(label)
+    if os.path.exists("./static/GradeApp/img/" + i_name):
+        print("File Removed")
+        os.remove("./static/GradeApp/img/" + i_name)
     plt.savefig("./static/GradeApp/img/" + i_name)
