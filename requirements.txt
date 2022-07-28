@@ -42,11 +42,6 @@ scipy==1.8.1
 six==1.16.0
 soupsieve==2.3.2.post1
 sqlparse==0.4.2
-tensorboard==2.9.1
-tensorboard-data-server==0.6.1
-tensorboard-plugin-wit==1.8.1
-tensorflow-estimator==2.9.0
-tensorflow-io-gcs-filesystem==0.26.0
 termcolor==1.1.0
 typing_extensions==4.3.0
 urllib3==1.26.11
