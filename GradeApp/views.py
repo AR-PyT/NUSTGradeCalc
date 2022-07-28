@@ -115,6 +115,7 @@ def add_new_record(input_data):
                                                          password=input_data["password"])
 
     # Create New Images
+    #
     predictions.decide_boundary(2, "Islamic Studies", "ABC/isl.png", np.array([
         *models.GradesA.objects.values_list('istd'),
         *models.GradesB.objects.values_list('istd'),

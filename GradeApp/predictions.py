@@ -30,19 +30,18 @@ def make_prediction(score, ch, data):
         1 if score < x < mean else 0 for x in data).count(1)
     SB /= len(data)
     res = get_predict(np.array([[score, ch, mean, SB,
-                                   score ** 2, score * ch, score * mean, score * SB,
-                                   ch ** 2, ch * mean, ch * SB,
-                                   mean ** 2, mean * SB,
-                                   SB ** 2]]))[0]
+                                 score ** 2, score * ch, score * mean, score * SB,
+                                 ch ** 2, ch * mean, ch * SB,
+                                 mean ** 2, mean * SB,
+                                 SB ** 2]]))[0]
 
     grade = np.where(res == np.max(res))[0][0]
     return grade_map[str(grade)]
 
 
-make_prediction(72, 3, np.array([12, 56, 78, 77, 65]))
-
-
 def decide_boundary(ch, label, i_name, data):
+    plt.clf()
+    plt.cla()
     if not data.size:
         return
     mean = data.mean()
@@ -58,7 +57,7 @@ def decide_boundary(ch, label, i_name, data):
                 1 if score < x < mean else 0 for x in data).count(1)
             SB /= len(data)
             res = get_predict(np.array([[score, ch, mean, SB, score ** 2, score * ch, score * mean, score * SB,
-                                           ch ** 2, ch * mean, ch * SB, mean ** 2, mean * SB, SB ** 2]]))[0]
+                                         ch ** 2, ch * mean, ch * SB, mean ** 2, mean * SB, SB ** 2]]))[0]
             cur_grade = np.where(res == np.max(res))[0][0]  # gives index for grade
             score -= 10
         score += 8
@@ -68,7 +67,7 @@ def decide_boundary(ch, label, i_name, data):
                 1 if score < x < mean else 0 for x in data).count(1)
             SB /= len(data)
             res = get_predict(np.array([[score, ch, mean, SB, score ** 2, score * ch, score * mean, score * SB,
-                                           ch ** 2, ch * mean, ch * SB, mean ** 2, mean * SB, SB ** 2]]))[0]
+                                         ch ** 2, ch * mean, ch * SB, mean ** 2, mean * SB, SB ** 2]]))[0]
             cur_grade = np.where(res == np.max(res))[0][0]  # gives index for grade
             score -= 2
         score += 1.5
@@ -77,7 +76,7 @@ def decide_boundary(ch, label, i_name, data):
                 1 if score < x < mean else 0 for x in data).count(1)
             SB /= len(data)
             res = get_predict(np.array([[score, ch, mean, SB, score ** 2, score * ch, score * mean, score * SB,
-                                           ch ** 2, ch * mean, ch * SB, mean ** 2, mean * SB, SB ** 2]]))[0]
+                                         ch ** 2, ch * mean, ch * SB, mean ** 2, mean * SB, SB ** 2]]))[0]
             cur_grade = np.where(res == np.max(res))[0][0]  # gives index for grade
             score -= 0.5
         boundaries.insert(0, score)
@@ -89,7 +88,7 @@ def decide_boundary(ch, label, i_name, data):
     for i in range(8 - len(boundaries)):
         boundaries.insert(0, 0)
     # Plot the new curve and save it
-    x = np.linspace(mean - 3*std_deviation, mean + 3*std_deviation, 100)
+    x = np.linspace(mean - 3 * std_deviation, mean + 3 * std_deviation, 100)
     # if std_deviation:
     y = stats.norm.pdf(x, mean, std_deviation)
 
