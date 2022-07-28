@@ -80,8 +80,11 @@ def make_prediction(score, ch, data):
 
     boundaries = get_boundary(start, ch, mean, data)
     return (grade_map[str(grade)],
-            (str(round(1 - stats.norm.cdf((boundaries[8 - grade] - score) / sqrt(data.var())),
-                       4) * 100) if grade else "0") + "%")
+            (str(round(100 - (stats.norm.cdf((boundaries[8 - grade] - score) / sqrt(data.var())) * 100),
+                       2)) if grade else "0") + "%",
+            (str(round((stats.norm.cdf((boundaries[7 - grade] - score) / sqrt(data.var())) * 100),
+                       2)) if grade != 7 else "0") + "%",
+            )
 
 
 def decide_boundary(ch, label, i_name, data):
