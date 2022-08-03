@@ -63,6 +63,8 @@ def get_boundary(score, ch, mean, data):
 
 
 def make_prediction(score, ch, data):
+    if np.all(data == 0):
+        return 'F', "0.0%", "0.0%"
     mean = data.mean()
     SB = list(1 if score > x > mean else 0 for x in data).count(1) if score > mean else -list(
         1 if score < x < mean else 0 for x in data).count(1)
