@@ -123,7 +123,10 @@ def add_new_record(input_data):
             # Calculate Aggregate Based on acquired Scores
             aggregate = 0
             for k, v in temp_score.items():
-                aggregate += (sum(v) / (len(v) * 100)) * grade_schema[key][k]
+                try:
+                    aggregate += (sum(v) / (len(v) * 100)) * grade_schema[key][k]
+                except ZeroDivisionError:
+                    pass
             aggregates[key] = round(aggregate, 2)
             print("[+] Aggregate Calculated", aggregate)
     # Add Record to DB
