@@ -81,11 +81,6 @@ def make_prediction(score, ch, data):
     start = 92 if mean > 85 else 89
 
     boundaries = get_boundary(start, ch, mean, data)
-
-    if ch == 2:
-        print('Mean: ', mean)
-        print('Score: ', score)
-        print('Grade: ', grade_map[str(grade)])
     return (grade_map[str(grade)],
             (str(round(100 - (stats.norm.cdf((boundaries[8 - grade] - score) / sqrt(data.var())) * 100),
                        2)) if grade else "0") + "%",
